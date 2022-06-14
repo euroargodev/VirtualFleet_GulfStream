@@ -4,7 +4,7 @@ This repository host work and results from analysis of Virtual Fleet simulations
 
 We aim to improve Argo sampling in the GSE. To do so, we first need to reproduce the observed sampling to validate the methodology. Here is the 2010-2020 Argo sampling of the North Atlantic:
 
-![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/2010-2010-Profile-Density.png)
+![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/2008-2018-Profile-Density.png)
 
 ***
 This work is developed by:
