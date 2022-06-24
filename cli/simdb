@@ -1,0 +1,454 @@
+#!/usr/bin/env python
+import os
+import sys
+import argparse
+import textwrap
+
+import numpy as np
+import pandas as pd
+import yaml
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
+# Localise the databse yaml file, assuming this folder structure (unchanged from github repo):
+#   VirtualFleet_GulfStream/README.md
+#   VirtualFleet_GulfStream/data/simulations_db.yml
+#   VirtualFleet_GulfStream/cli/simdb
+ROOT = os.path.sep.join([os.path.dirname(__file__), "..", "data"])
+DBFILE = os.path.sep.join([ROOT, "simulations_db.yml"])
+
+# Other global variables
+SORT_PROPS = [None,
+              'pbs.mem', 'pbs.vmem', 'pbs.cpupercent', 'pbs.cput', 'pbs.ncpus', 'pbs.walltime',
+              'sim.obs', 'sim.traj', 'sim.size']
+RUN_STATUS = {'?': '⁉', 'done': '💚', 'done-invalid': '💔', 'running': '🏃', 'running-invalid': '🏃💔'}
+
+PREF = "\033["
+RESET = f"{PREF}0m"
+class COLORS:
+    black = "30m"
+    red = "31m"
+    green = "32m"
+    yellow = "33m"
+    blue = "34m"
+    magenta = "35m"
+    cyan = "36m"
+    white = "37m"
+
+def sizeUnitConvertor(sizeInKBytes, unit='kb'):
+    if unit == 'b':
+        return sizeInKBytes*1024
+    elif unit == "mb":
+        return sizeInKBytes/(1024)
+    elif unit == "gb":
+        return sizeInKBytes/(1024*1024)
+    else:
+        return sizeInKBytes
+
+def puts(text, color=None, bold=False, file=sys.stdout):
+    """Alternative to print, uses no color by default but accepts any color from the COLORS class."""
+    if color is None:
+        print(f'{PREF}{1 if bold else 0}m' + text + RESET, file=file)
+    else:
+        print(f'{PREF}{1 if bold else 0};{color}' + text + RESET, file=file)
+
+def load_db(db_file=DBFILE):
+    with open(db_file, 'r') as stream:
+        db = yaml.load(stream, Loader=Loader)
+    return db
+
+def validated(this_run):
+    """Check if this run properties structure complies with the template. Access from DB"""
+    template = DB['simulations']['run-template']
+    valid = True
+    for key0 in template:
+        if key0 not in this_run:
+            # print("%s not found" % key0)
+            valid = False
+            break
+        elif isinstance(template[key0], dict):
+            for key1 in template[key0]:
+                if key1 not in this_run[key0]:
+                    # print("'%s.%s' not found" % (key0, key1))
+                    valid = False
+                    break
+                elif isinstance(template[key0][key1], dict):
+                    for key2 in template[key0][key1]:
+                        if key2 not in this_run[key0][key1]:
+                            # print("'%s.%s.%s' not found" % (key0, key1, key2))
+                            valid = False
+                            break
+                        elif isinstance(template[key0][key1][key2], dict):
+                            for key3 in template[key0][key1][key2]:
+                                if key3 not in this_run[key0][key1][key2]:
+                                    # print("'%s.%s.%s.%s' not found" % (key0, key1, key2, key3))
+                                    valid = False
+                                    break
+    return valid
+
+def get_run_status(run):
+    status = '?'
+    if readthiskey(run, ['pbs', 'resources_used', 'cpupercent']):
+        # If this key is not None, it means the simulation is done and information have been filled
+        if validated(run):
+            status = 'done'
+        else:
+            status = 'done-invalid'
+    else:
+        # If the key is None, it means the simulation is still running and only partial information are available
+        status = 'running'
+        # if validated(run):
+        #     status = 'running'
+        # else:
+        #     status = 'running-invalid'
+
+    return status, RUN_STATUS[status]
+
+def abs2local(a_path):
+    """Convert datarmor paths to my laptop paths. This is highly customized !"""
+    root, local = "", ""
+    if '/home1/datahome/gmaze/git' in a_path:
+        root = "/home1/datahome/gmaze/git"
+        local = "/Users/gmaze/git"
+    elif '/home1/scratch/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim' in a_path:
+        root = "/home1/scratch/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim"
+        local = "/Users/gmaze/data/EARISE/WP2.3/Gulf_Stream_sim_scratch"
+    elif "/home1/datawork/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim" in a_path:
+        root = "/home1/datawork/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim"
+        local = "/Users/gmaze/data/EARISE/WP2.3/Gulf_Stream_sim"
+    elif "/home/datawork-lops-bluecloud" in a_path:
+        root = "/home/datawork-lops-bluecloud"
+        local = "/Volumes/BLUECLOUD"
+    if os.uname()[0] == 'Darwin':
+        a_path = a_path.replace(root, local)
+    return a_path
+
+def unalias(a_path):
+    """Remove path alias using DB['paths'] definition"""
+    if a_path is not None and "${" in a_path:
+        relkey = a_path.split("${")[-1].split("}")[0]
+        abskey = DB['paths'][relkey]
+        a_path = a_path.replace("${%s}" % relkey, abskey)
+        if LOCAL:
+            a_path = abs2local(a_path)
+    return a_path
+
+def sexagesimal2timedelta(sex):
+    # https://stackoverflow.com/questions/52732222/in-the-yaml-format-file-as-test-yaml-some-mac-addresses-will-be-judged-as-numbe
+    a, SS = np.divmod(sex, 60)
+    a, MM = np.divmod(a, 60)
+    a, HH = np.divmod(a, 60)
+    return pd.Timedelta(SS+MM*60+HH*3600, unit='sec')
+
+def sort_dict_by_value(d, sort=None):
+    if sort is None:
+        return d
+    else:
+        reverse = False if sort == 'ascent' else True
+        return dict(sorted(d.items(), key=lambda x: x[1], reverse=reverse))
+
+def read_a_file_size(raw_yaml_value, unit=None):
+    if raw_yaml_value is None:
+        val, txt = None, ''
+    else:
+        val = raw_yaml_value.lower()
+        # Convert all values to kb:
+        if 'kb' in val:
+            val = float(val.replace('kb', ''))
+        elif 'mb' in val:
+            val = float(val.replace('mb', '')) * 1024
+        elif 'gb' in val:
+            val = float(val.replace('gb', '')) * 1024 * 1024
+        txt = "%0.2f Kb" % val
+
+        # Then possibly change unit:
+        if unit is not None:
+            if unit.lower() == 'mb':
+                val = val / 1024
+                txt = "%0.2f Mb" % val
+            elif unit.lower() == 'gb':
+                val = val / 1024 / 1024
+                txt = "%0.2f Gb" % val
+
+    return val, txt
+
+def read_a_timestamp(raw_yaml_value, unit=None):
+    if raw_yaml_value is None:
+        val, txt = None, ''
+    else:
+        val = sexagesimal2timedelta(raw_yaml_value)
+        txt = str(val)
+        if unit is not None:
+            if unit.lower() == 's':
+                val = val.total_seconds()
+                txt = "%0.2f secs" % val
+            if unit.lower() == 'm':
+                val = val.total_seconds() / 60
+                txt = "%0.2f mins" % val
+            if unit.lower() == 'h':
+                val = val.total_seconds() / 60 / 60
+                txt = "%0.2f hours" % val
+            if unit.lower() == 'd':
+                val = val.total_seconds() / 60 / 60 / 24
+                txt = "%0.2f days" % val
+    return val, txt
+
+def readthiskey(run, keys):
+    val = None
+    if len(keys) == 1:
+        if keys[0] in run:
+            val = run[keys[0]]
+        else:
+            raise ValueError("%s not found" % keys[0])
+    if len(keys) == 2:
+        if keys[1] in run[keys[0]]:
+            val = run[keys[0]][keys[1]]
+        else:
+            raise ValueError("%s not found" % keys[1])
+    if len(keys) == 3:
+        if keys[2] in run[keys[0]][keys[1]]:
+            val = run[keys[0]][keys[1]][keys[2]]
+        else:
+            raise ValueError("%s not found" % keys[2])
+    if len(keys) == 4:
+        if keys[3] in run[keys[0]][keys[1]][keys[2]]:
+            val = run[keys[0]][keys[1]][keys[2]][keys[3]]
+        else:
+            raise ValueError("%s not found" % keys[3])
+    return val
+
+def convertthiskeyvalue(val, key, unit=None):
+    if key in ['walltime', 'cput']:
+        val, txt = read_a_timestamp(val, unit=unit)
+
+    if key in ['mem', 'vmem', 'size-on-disk']:
+        val, txt = read_a_file_size(val, unit=unit)
+
+    return val
+
+def listvalues(runs, keys, unit=None, sort=None):
+    results = {}
+    for run in runs:
+        if "template" not in run:
+            value = readthiskey(runs[run], keys)
+            value = convertthiskeyvalue(value, keys[-1], unit=unit)
+            results.update({run: value})
+    return sort_dict_by_value(results, sort=sort)
+
+def sortby(args, run_list, data_only=False):
+    if args.sortby not in SORT_PROPS:
+        raise ValueError("Invalid sorting property '%s'. Must be one in: %s" % (args.sortby, SORT_PROPS))
+    if args.sortby is not None:
+        if args.sortby in ['pbs.mem', 'mem']:
+            keys = ['pbs', 'resources_used', 'mem']
+        elif args.sortby in ['pbs.vmem', 'vmem']:
+            keys = ['pbs', 'resources_used', 'vmem']
+        elif args.sortby in ['pbs.cpupercent', 'cpupercent']:
+            keys = ['pbs', 'resources_used', 'cpupercent']
+        elif args.sortby in ['pbs.cput', 'cput']:
+            keys = ['pbs', 'resources_used', 'cput']
+        elif args.sortby in ['pbs.ncpus', 'ncpus']:
+            keys = ['pbs', 'resources_used', 'ncpus']
+        elif args.sortby in ['pbs.walltime', 'walltime']:
+            keys = ['pbs', 'resources_used', 'walltime']
+        elif args.sortby in ['sim.traj', 'traj']:
+            keys = ['output', 'array-size', 'traj']
+        elif args.sortby in ['sim.obs', 'obs']:
+            keys = ['output', 'array-size', 'obs']
+        elif args.sortby in ['sim.size', 'size']:
+            keys = ['output', 'size-on-disk']
+        listedvalues = listvalues(run_list, keys, sort=args.sort)
+        run_order = listedvalues.keys()
+        run_order = run_order if not args.reverse else reversed(run_order)
+    else:
+        listedvalues = None
+        run_order = run_list.keys() if not args.reverse else reversed(run_list.keys())
+    if not data_only:
+        return run_order
+    else:
+        return listedvalues
+
+def get_what_to_show_from_args(args):
+    # Check if any of the specific properties is listed, otherwise fall back on default list:
+    plist = []
+    if not (args.comment or args.output or args.resources):
+        # This is the default list:
+        plist.append('comment')
+        plist.append('resources')
+        plist.append('output')
+    else:
+        # Build user-define list:
+        if args.comment:
+            plist.append('comment')
+        if args.output:
+            plist.append('output')
+        if args.resources:
+            plist.append('resources')
+
+    # Now parse arguments to build the list of run properties to display (and how)
+    pprt = {}
+    if 'comment' in plist:
+        pprt.update({'comment': print_comment})
+    if 'output' in plist:
+        pprt.update({'output': print_outputfile})
+    if 'resources' in plist:
+        pprt.update({'resources': print_resources})
+
+    if args.list:
+        plist, pprt = [], {}
+    #
+    return plist, pprt
+
+def shift1(txt=""):
+    return "{0:5}{1}".format(' ', txt)
+
+def shift2(txt=""):
+    return "{0:10}{1}".format(' ', txt)
+
+def print_comment(run, file=sys.stdout):
+    comment = run['comment']
+    # icon = "📎"
+    icon = "✍️"
+    puts(shift1("%s  Comment:" % icon), color=COLORS.white, file=file)
+    # print(shift2("%s" % comment), file=file)
+    print(shift2(textwrap.fill(comment, width=75, subsequent_indent=shift2())), file=file)
+
+def print_outputfile(run, file=sys.stdout):
+    output = run['output']
+    puts(shift1("📐 %s:" % "Output"), color=COLORS.white, file=file)
+    if 'array-size' in output:
+        traj = output['array-size']['traj']
+        obs = output['array-size']['obs']
+        print(shift2("[N_TRAJ x N_OBS] = [%s x %s]" % (traj, obs)), file=file)
+    if 'file' in output:
+        outputfile = output['file']
+        outputfile = unalias(outputfile)
+        print(shift2("Trajectories: %s" % outputfile), file=file)
+        # print(shift2("\U0001F4C2 Path: %s" % outputfile), file=file)
+    if 'size-on-disk' in output:
+        size, txt = read_a_file_size(output['size-on-disk'], unit=UNITSIZE)
+        print(shift2("Traj. file size: %s" % txt), file=file)
+        # print(shift2("\U0001F9F1 Size on disk: %s" % txt), file=file)
+    if 'index' in output:
+        indexfile = output['index']
+        indexfile = unalias(indexfile)
+        print(shift2("Profile Index: %s" % indexfile), file=file)
+        try:
+            with open(abs2local(indexfile), 'r') as fp:
+                x = len(fp.readlines())
+            print(shift2("Profile count: %i" % (x-9)), file=file)
+        except:
+            pass
+
+    # if 'float-cfg' in output:
+    #     cfgfile = output['float-cfg']
+    #     cfgfile = unalias(cfgfile)
+    #     print(shift2("Floats configuration: %s" % cfgfile), file=file)
+
+
+      # float-cfg: ${scratch}/simu07/vf-simu-natl-691822_floatcfg.json
+      # index: ${scratch}/simu07/vf-simu-natl-691822_ar_index_prof.txt
+
+def print_resources(run, file=sys.stdout):
+    """        cpupercent: 107
+        cput: 43:56:43
+        mem: 35273264kb
+        ncpus: 28
+        vmem: 61203788kb
+        walltime: 40:59:53
+        """
+    # icon = "➡"
+    icon = "\U0001F9F1"
+    if run['runs-on'] == 'datarmor':
+        pbs = run['pbs']
+        if 'resources_used' in pbs:
+            resources = pbs['resources_used']
+            puts(shift1("%s %s:" % (icon, "PBS resources")), color=COLORS.white, file=file)
+            if 'cpupercent' in resources:
+                puts(shift2("CPU percent: %s" % resources['cpupercent']), file=file)
+            if 'cput' in resources:
+                cput, txt = read_a_timestamp(resources['cput'], unit=UNITTIME)
+                puts(shift2("CPU time: %s" % txt), file=file)
+            if 'ncpus' in resources:
+                puts(shift2("CPU number: %s" % resources['ncpus']), file=file)
+            if 'mem' in resources:
+                size, txt = read_a_file_size(resources['mem'], unit=UNITSIZE)
+                puts(shift2("Memory (real): %s" % txt), file=file)
+            if 'vmem' in resources:
+                size, txt = read_a_file_size(resources['vmem'], unit=UNITSIZE)
+                puts(shift2("Memory (virtual): %s" % txt), file=file)
+            if 'walltime' in resources:
+                walltime, txt = read_a_timestamp(resources['walltime'], unit=UNITTIME)
+                puts(shift2("Walltime: %s" % txt), file=file)
+        else:
+            puts(shift1("%s PBS resources not found !" % icon), color=COLORS.red, file=file)
+    else:
+        puts(shift1("%s This run didn't used PBS resources (executed on '%s')" % (icon, run['runs-on'])), color=COLORS.yellow, file=file)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='VirtualFleet simulation (yaml) database file parser',
+                                     epilog="(c) LOPS/Ifremer, 2022")
+
+    # Add long and short arguments
+    parser.add_argument("-c", "--comment", help="Display run property: comments", action='store_true')
+    parser.add_argument("-o", "--output", help="Display run property: simulation output info", action='store_true')
+    parser.add_argument("-s", "--resources", help="Display run property: PBS resources", action='store_true')
+
+    parser.add_argument("-r", "--reverse", help="Print results in reversed order", action='store_true')
+    parser.add_argument("-l", "--list", help="List names of runs", action='store_true')
+    parser.add_argument("-N", help="Display only N runs", default=100)
+
+    parser.add_argument("--sortby", help="Sorting property (%s)" % SORT_PROPS, default=None)
+    parser.add_argument("--sort", help="Sorting direction ('ascent', 'descent')", default='ascent')
+    parser.add_argument("--sortdata", help="Only return sorted data", action='store_true')
+    parser.add_argument("--run", help="Select a run by name", default='')
+    parser.add_argument("--local", help="Localize absolute paths", action='store_true')
+    parser.add_argument("--unitsize", help="Unit for file size ('kb', 'mb', 'gb')", default="gb")
+    parser.add_argument("--unittime", help="Unit for time laps ('s', 'm', 'h', 'd')", default=None)
+    parser.add_argument("--file", help="Yaml database file to parse (guessed automatically)", default=DBFILE)
+
+    # Read arguments from the command line
+    args = parser.parse_args()
+    LOCAL = args.local
+    UNITSIZE = args.unitsize
+    UNITTIME = args.unittime
+    # print(args)
+
+    # Load the databse:
+    DB = load_db(DBFILE)
+
+    # Read the list of run properties to display and how:
+    plist, pprt = get_what_to_show_from_args(args)
+
+    if len(plist) >= 0:
+        file = sys.stdout
+        run_list = DB['simulations']
+        run_order = sortby(args, run_list)
+        if args.sortby and args.sortdata:
+            data = sortby(args, run_list, data_only=True)
+            result = {}
+            if args.run:
+                for run_name in data:
+                    if args.run in run_name:
+                        result.update({run_name: data[run_name]})
+            else:
+                result = data
+            print(result, file=file)
+            exit(0)
+        count = 0
+        for run_name in run_order:
+            if "template" not in run_name and args.run in run_name:
+                count += 1
+                this_run = DB['simulations'][run_name]
+                status, status_icon = get_run_status(this_run)
+
+                # puts("\u21AA %s" % (run_name), color=COLORS.red, bold=True, file=file)
+                puts("%s %s" % (status_icon, run_name), color=COLORS.red, bold=True, file=file)
+                for p in plist:
+                    # print(p)
+                    pprt[p](this_run)
+            if count >= int(args.N):
+                break
+    exit(0)

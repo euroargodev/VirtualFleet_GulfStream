@@ -1,0 +1,851 @@
+# Try to centralize here all information about VirtualFleet simulations
+
+thermodynamic:
+
+  GLORYS:
+    src: /home/ref-ocean-reanalysis/global-reanalysis-phy-001-030-daily
+    description: https://doi.org/10.48670/moi-00021
+    comment:
+    size-on-disk: 11.8Tb
+    array-size:
+      x: 4320
+      y: 2041
+      z: 50
+    start: 01/01/1993
+    end: 31/12/2018
+    step: daily
+
+  GLORYS-NATL-init:
+    src: /home/datawork-lops-bluecloud/natl-reanalysis-phy-001-030-daily
+    description: https://doi.org/10.48670/moi-00021
+    comment: "Global product subsetted to the North-Atlantic. Deprecated, replaced by GLORYS-NATL"
+    size-on-disk: 220Gb
+    array-size:
+      x: 961
+      y: 721
+      z: 41
+    domain:
+      lon_min: -90
+      lon_max: -10
+      lat_min: 10
+      lat_max: 70
+      dpt_min: 0.494025
+      dpt_max: 2225.078
+    start: 01/01/2008
+    end: 31/12/2018
+    step: daily
+
+  GLORYS-NATL:
+    src: /home/datawork-lops-bluecloud/natl-reanalysis-phy-001-030-daily
+    description: https://doi.org/10.48670/moi-00021
+    comment: "Global product subsetted to the North-Atlantic. Only: U, V and SLA subsetted."
+    size-on-disk: 243Gb
+    array-size:
+      x: 1141
+      y: 721
+      z: 41
+    domain:
+      lon_min: -90
+      lon_max: 5
+      lat_min: 10
+      lat_max: 70
+      dpt_min: 0.494025
+      dpt_max: 2225.078
+    start: 01/01/2008
+    end: 31/12/2018
+    step: daily
+
+
+paths:
+  repo: /home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream
+#  scratch: /home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim
+  scratch: /home1/scratch/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim
+
+
+simulations:
+
+  run-template:
+
+    comment:
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      name: default
+      file:
+      # Add below over-writen parameters
+      #      life_expectancy: 300
+      #      area_cycle_duration: 10 * 24
+      #      area_parking_depth: 1500.
+      #      area_xmin: -75
+      #      area_xmax: -48
+      #      area_ymin: 33
+      #      area_ymax: 45.5
+
+    execute:
+      duration: days=30
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid:
+      log:
+        debug:
+#        pbs:
+#        script:
+      submit:
+        file: ${repo}/local_work/simu04.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 250g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file:
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+      index:
+
+  run-777994:
+
+    comment: "9th experiment with online change of float params. 10 years simulation with full deployment plan. Floats
+          config all default (drift:1000m, profD:2000m, cycle_period:10
+          days) except when they enter the GSE area,
+          parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up
+          to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-777994_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 5 * 24
+      area_parking_depth: 1500.
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 777994
+      log:
+        debug: ${scratch}/logs/simu07-batch-777994.datarmor0.log
+        script: ${scratch}/simu07/simu07-777994.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file: ${scratch}/simu07/
+#      file: ${scratch}/simu07/vf-simu-natl-777994.nc
+#      index: ${scratch}/simu07/vf-simu-natl-777994_ar_index_prof.txt
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+
+  run-777970:
+
+    comment: "8th experiment with online change of float params. 10 years simulation with full deployment plan. Floats
+          config all default (drift:1000m, profD:2000m, cycle_period:10
+          days) except when they enter the GSE area (Argo-AST definition),
+          parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up
+          to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-777970_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 5 * 24
+      area_parking_depth: 1500.
+      area_xmin: -75
+      area_xmax: -30
+      area_ymin: 36
+      area_ymax: 51
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 777970
+      log:
+        debug: ${scratch}/logs/simu07-batch-777970.datarmor0.log
+        script: ${scratch}/simu07/simu07-777970.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file: ${scratch}/simu07/eznfp3jf.nc
+#      file: ${scratch}/simu07/vf-simu-natl-777970.nc
+#      index: ${scratch}/simu07/vf-simu-natl-777970_ar_index_prof.txt
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+
+  run-777931:
+
+    comment: "7th experiment with online change of float params. 10 years simulation with full deployment plan. Floats
+          config all default (drift:1000m, profD:2000m, cycle_period:10
+          days) except when they enter the GSE area (Argo-AST definition),
+          parking_depth is temporarily set to 1500m. All floats cycled up
+          to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-777931_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 10 * 24
+      area_parking_depth: 1500.
+      area_xmin: -75
+      area_xmax: -30
+      area_ymin: 36
+      area_ymax: 51
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 777931
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o777931
+        debug: ${scratch}/logs/simu07-batch-777931.datarmor0.log
+        script: ${scratch}/simu07/simu07-777931.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file: ${scratch}/simu07/2ise2ocv.nc
+#      file: ${scratch}/simu07/vf-simu-natl-777931.nc
+#      index: ${scratch}/simu07/vf-simu-natl-777931_ar_index_prof.txt
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+
+  run-777835:
+
+    comment: "6th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), cycle_period is temporarily set to 5 days. All floats cycled up to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-777835_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 5 * 24
+      area_xmin: -75
+      area_xmax: -30
+      area_ymin: 36
+      area_ymax: 51
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 777835
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o777835
+        debug: ${scratch}/logs/simu07-batch-777835.datarmor0.log
+        script: ${scratch}/simu07/simu07-777835.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file: ${scratch}/simu07/__n4p14h.nc
+#      file: ${scratch}/simu07/vf-simu-natl-777823.nc
+#      index: ${scratch}/simu07/vf-simu-natl-777823_ar_index_prof.txt
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+
+  run-777823:
+
+    comment: "5th experiment, control run. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. Updated Control run after fixed bug in circular GLORYS-NATL boundaries."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-777823_floatcfg.json
+      name: default
+      life_expectancy: 300
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 777823
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o777823
+        debug: ${scratch}/logs/simu07-batch-777823.datarmor0.log
+        script: ${scratch}/simu07/simu07-777823.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent:
+        cput:
+        mem:
+        ncpus:
+        vmem:
+        walltime:
+
+    output:
+      file: ${scratch}/simu07/86bk49e9.nc
+#      file: ${scratch}/simu07/vf-simu-natl-777823.nc
+#      index: ${scratch}/simu07/vf-simu-natl-777823_ar_index_prof.txt
+      size-on-disk:
+      array-size:
+        traj:
+        obs:
+
+  run-711242:
+
+    comment: "4th experiment. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), parking_depth is temporarily set to 1500m. All floats cycled up to 300 times. Deprecated, replaced by run-777931"
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-711242_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 10 * 24
+      area_parking_depth: 1500.
+      area_xmin: -75
+      area_xmax: -30
+      area_ymin: 36
+      area_ymax: 51
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 711242
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o711242
+        debug: ${scratch}/logs/simu07-batch-711242.datarmor0.log
+        script: ${scratch}/simu07/simu07-711242.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent: 107
+        cput: 43:56:43
+        mem: 35273264kb
+        ncpus: 28
+        vmem: 61203788kb
+        walltime: 40:59:53
+
+    output:
+#      file: ${scratch}/simu07/df6xpbse.nc
+      file: ${scratch}/simu07/vf-simu-natl-711242.nc
+      size-on-disk: 8gb
+      array-size:
+        traj: 1484
+        obs: 144023
+      index: ${scratch}/simu07/vf-simu-natl-711242_ar_index_prof.txt
+
+  run-691822:
+
+    comment: "3rd experiment. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), cycle_period is temporarily set to 5 days. All floats cycled up to 300 times. Deprecated, replaced by run-777835."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-691822_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 5 * 24
+      area_xmin: -75
+      area_xmax: -30
+      area_ymin: 36
+      area_ymax: 51
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 691822
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o691822
+        debug: ${scratch}/logs/simu07-batch-691822.datarmor0.log
+        script: ${scratch}/simu07/simu07-691822.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent: 107
+        cput: 47:29:34
+        mem: 35015004kb
+        ncpus: 28
+        vmem: 63054384kb
+        walltime: 44:07:37
+
+    output:
+#      file: ${scratch}/simu07/8mxm3wi0.nc
+      file: ${scratch}/simu07/vf-simu-natl-691822.nc
+      size-on-disk: 8gb
+      array-size:
+        traj: 1484
+        obs: 144017
+      index: ${scratch}/simu07/vf-simu-natl-691822_ar_index_prof.txt
+
+  run-653526:
+
+    comment: "2nd experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, parking_depth is temporarily set to 1500m. All floats cycled up to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-653526_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 10 * 24
+      area_parking_depth: 1500.
+      area_xmin: -75
+      area_xmax: -48
+      area_ymin: 33
+      area_ymax: 45.5
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 653526
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o653526
+        debug: ${scratch}/logs/simu07-batch-653526.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: 48:00:00
+        mem: 100g
+      resources_used:
+        cpupercent: 108
+        cput: 45:42:08
+        mem: 35090824kb
+        ncpus: 28
+        vmem: 60958372kb
+        walltime: 42:04:32
+
+    output:
+      file: ${scratch}/simu07/vf-simu-natl-653526.nc
+#      file: ${scratch}/simu07/20rja9iz.nc
+      size-on-disk: 8Gb
+      array-size:
+        traj: 1484
+        obs: 144017
+      index: ${scratch}/simu07/vf-simu-natl-653526_ar_index_prof.txt
+
+  run-614790:
+
+    comment: "1st experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, cycle_period is temporarily set to 5 days. All floats cycled up to 300 times."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu07/vf-simu-natl-614790_floatcfg.json
+      name: gse-experiment
+      life_expectancy: 300
+      area_cycle_duration: 5 * 24
+      area_xmin: -75
+      area_xmax: -48
+      area_ymin: 33
+      area_ymax: 45.5
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers: 56
+
+    pbs:
+      jobid: 614790
+      log:
+        pbs: ${scratch}/logs/Virt_Fleet.o614790
+        debug: ${scratch}/logs/simu07-batch-614790.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu07.pbs
+        queue: mpi
+        walltime: hours=48
+        mem: 100g
+      resources_used:
+        cpupercent: 162
+        cput: 72:11:53
+        mem: 37478588kb
+        ncpus: 28
+        vmem: 270668888kb
+        walltime: 44:28:53
+
+    output:
+#      file: ${scratch}/simu07/oya3lycd.nc
+      file: ${scratch}/simu07/vf-simu-natl-614790.nc
+      size-on-disk: 8Gb
+      array-size:
+        traj: 1484
+        obs: 144012
+      index: ${scratch}/simu07/vf-simu-natl-614790_ar_index_prof.txt
+
+  run-613257:
+
+    comment: "Second 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. DEPRECATED, use run-777823 instead."
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL
+
+    argo-configuration:
+      file: ${scratch}/simu04/vf-simu-natl-613257_floatcfg.json
+      name: default
+      life_expectancy: 300
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers: 56
+
+    runs-on: datarmor
+
+    pbs:
+      jobid: 613257
+      log:
+        pbs: ${scratch}/logs/VirtualFleet.o613257
+        debug: ${scratch}/logs/simu04-batch-613257.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu04.pbs
+        queue: mpi
+        walltime: hours=48
+        mem: 100g
+      resources_used:
+        cpupercent: 161
+        cput: 68:41:48
+        mem: 38619288kb
+        ncpus: 28
+        vmem: 268121036kb
+        walltime: 42:27:50
+
+    output:
+#      file: ${scratch}simu04/urhvp0m9.nc
+      file: ${scratch}/simu04/vf-simu-natl-613257.nc
+      size-on-disk: 8Gb
+      array-size:
+        traj: 1484
+        obs: 144017
+      index: ${scratch}/simu04/vf-simu-natl-613257_ar_index_prof.txt
+
+  run-542230:
+
+    comment: "First successful 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled infinitely to the end of the simulation. Velocity field is the initial version that stops at 10W."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL-init
+
+    argo-configuration:
+      name: default
+
+    execute:
+      duration: days=365*10
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 542230
+      log:
+        pbs: ${repo}/local_work/simu04.pbs.o542230
+        debug: ${repo}/local_work/simu04-batch-542230.datarmor0.log
+      submit:
+        file: ${repo}/local_work/simu04.pbs
+        queue: mpi
+        walltime: hours=48
+        mem: 250g
+      resources_used:
+        cpupercent: 107
+        cput: 41:26:14
+        mem: 35732992kb
+        ncpus: 28
+        vmem: 60153420kb
+        walltime: 38:26:00
+
+    output:
+#      file: ${scratch}simu04/y479kl3c.nc
+      file: ${scratch}/simu04/vf-simu-natl-542230.nc
+      size-on-disk: 11Gb
+      array-size:
+        traj: 1484
+        obs: 175201
+
+  run-538001:
+
+    comment: "1 year simulation only (2018) with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled infinitely to the end of the simulation. Velocity field is the initial version that stops at 10W."
+
+    runs-on: datarmor
+
+    deployment-plan:
+      src: ${repo}/data/2008-2018-Deployment-Plan.json
+      start: 01/01/2008
+      end: 31/12/2018
+      float-number: 1648
+
+    velocity-field:
+      name: GLORYS-NATL-init
+
+    argo-configuration:
+      name: default
+
+    execute:
+      duration: days=365
+      step: minutes=5
+      record: seconds=3600/2
+      dask_hpcconfig:
+        name: datarmor-local
+        overrides:
+          cluster.n_workers:
+
+    pbs:
+      jobid: 538001
+      log:
+        pbs: ${repo}/local_work/simu.pbs.o538001
+        debug:
+      submit:
+        file: ${repo}/local_work/simu.pbs
+        queue: mpi
+        walltime: hours=48
+        mem: 250g
+      resources_used:
+        cpupercent: 107
+        cput: 43:53:18
+        mem: 40399432kb
+        ncpus: 28
+        vmem: 69993320kb
+        walltime: 40:53:34
+
+    output:
+      file: /home1/datawork/gmaze/Projects/EARISE/WP2.3/Gulf_Stream_sim/3a1n556x.nc
+      size-on-disk: 331Mb
+      array-size:
+        traj: 449
+        obs: 17521
