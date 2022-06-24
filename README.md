@@ -1,10 +1,10 @@
 # Virtual Fleet simulations for the Gulf Stream Extension
 
-This repository host work and results from analysis of Virtual Fleet simulations dedicated to improve observation of the Gulf Stream Extension with Argo floats.
+This repository host work and results from analysis of Virtual Fleet simulations dedicated to improve observation of the Gulf Stream Extension with Argo floats. Our goal is to improve Argo sampling of the GSE. 
 
-We aim to improve Argo sampling in the GSE. To do so, we first need to reproduce the observed sampling to validate the methodology. Here is the 2010-2020 Argo sampling of the North Atlantic:
+To do so, we first need to reproduce the observed sampling to validate the methodology. Below is our control run 2008-2018 Argo sampling of the North Atlantic, and it looks quite good ! [Check the full control run validation thread here](https://github.com/euroargodev/boundary_currents/discussions/11).
 
-![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/2008-2018-Profile-Density.png)
+![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-Control-(%23613257).png)
 
 ***
 This work is developed by:
