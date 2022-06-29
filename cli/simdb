@@ -433,8 +433,8 @@ if __name__ == '__main__':
     UNITTIME = args.unittime
     # print(args)
 
-    # Load the databse:
-    DB = load_db(DBFILE)
+    # Load the database:
+    DB = load_db(args.file)
 
     # Read the list of run properties to display and how:
     plist, pprt = get_what_to_show_from_args(args)
