@@ -6,18 +6,14 @@ import textwrap
 
 import numpy as np
 import pandas as pd
-import yaml
-try:
-    from yaml import CLoader as Loader, CDumper as Dumper
-except ImportError:
-    from yaml import Loader, Dumper
+import json
 
-# Localise the databse yaml file, assuming this folder structure (unchanged from github repo):
+# Localise the database json file, assuming this folder structure (unchanged from github repo):
 #   VirtualFleet_GulfStream/README.md
-#   VirtualFleet_GulfStream/data/simulations_db.yml
+#   VirtualFleet_GulfStream/data/simulations_db.json
 #   VirtualFleet_GulfStream/cli/simdb
 ROOT = os.path.sep.join([os.path.dirname(__file__), "..", "data"])
-DBFILE = os.path.sep.join([ROOT, "simulations_db.yml"])
+DBFILE = os.path.sep.join([ROOT, "simulations_db.json"])
 
 # Other global variables
 SORT_PROPS = [None,
@@ -56,7 +52,7 @@ def puts(text, color=None, bold=False, file=sys.stdout):
 
 def load_db(db_file=DBFILE):
     with open(db_file, 'r') as stream:
-        db = yaml.load(stream, Loader=Loader)
+        db = json.load(stream)
     return db
 
 def validated(this_run):
@@ -174,11 +170,32 @@ def read_a_file_size(raw_yaml_value, unit=None):
 
     return val, txt
 
-def read_a_timestamp(raw_yaml_value, unit=None):
+def read_a_timestamp_yaml(raw_yaml_value, unit=None):
     if raw_yaml_value is None:
         val, txt = None, ''
     else:
         val = sexagesimal2timedelta(raw_yaml_value)
+        txt = str(val)
+        if unit is not None:
+            if unit.lower() == 's':
+                val = val.total_seconds()
+                txt = "%0.2f secs" % val
+            if unit.lower() == 'm':
+                val = val.total_seconds() / 60
+                txt = "%0.2f mins" % val
+            if unit.lower() == 'h':
+                val = val.total_seconds() / 60 / 60
+                txt = "%0.2f hours" % val
+            if unit.lower() == 'd':
+                val = val.total_seconds() / 60 / 60 / 24
+                txt = "%0.2f days" % val
+    return val, txt
+
+def read_a_timestamp(raw_json_value, unit=None):
+    if raw_json_value is None:
+        val, txt = None, ''
+    else:
+        val = pd.Timedelta(raw_json_value)  # Expect "HH:MM:SS"
         txt = str(val)
         if unit is not None:
             if unit.lower() == 's':
