@@ -6,6 +6,29 @@ To do so, we first need to reproduce the observed sampling to validate the metho
 
 ![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-Control-(%23613257).png)
 
+
+## Simulations
+This repo is using the Virtual Fleet software from the ["gulf-stream" branch](https://github.com/euroargodev/VirtualFleet/tree/gulf-stream).
+
+The Argo deployment plan used is the one implemented in reality over 2008-2018. The data/latitude/longitude positions/wmo, and more, of [all Argo floats deployed is available in the json file](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/data/2008-2018-Deployment-Plan.json).  
+
+The list of all Argo floats configuration json files are found [in this folder](https://github.com/euroargodev/VirtualFleet_GulfStream/tree/main/data), with the 'vf-floatcfg' preffix. These can be loaded with:
+```python
+from virtualargofleet import FloatConfiguration
+cfg = FloatConfiguration('vf-floatcfg-gse-experiment-N300-5days.json')
+```
+
+All simulations we performed are documented in [this json file](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/data/simulations_db.json).
+We created a command line program to explore this simulation's database, it's named ``simdb`` and is available under the ``cli`` folder. If you cloned this repo, simply add this folder to our path:
+```bash
+export PATH="~/git/github/euroargodev/VirtualFleet_GulfStream/cli:$PATH"
+```
+and then in a command line:
+```bash
+simdb --help
+```
+
+
 ***
 This work is developed by:
 <div>
