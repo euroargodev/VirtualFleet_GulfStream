@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import json
 
-# Localise the database json file, assuming this folder structure (unchanged from github repo):
+# Localise the database json file, assuming the folder structure is unchanged from github repo:
 #   VirtualFleet_GulfStream/README.md
 #   VirtualFleet_GulfStream/data/simulations_db.json
 #   VirtualFleet_GulfStream/cli/simdb
@@ -93,7 +93,7 @@ def get_run_status(run):
         checkA = False
     checkB = readthiskey(run, ['pbs', 'resources_used', 'cpupercent']) is not None
     if checkA or checkB:
-        # If this key is not None, it means the simulation is done and information have been filled
+        # If any of checkA or checkB is not None, it means the simulation is done and information have been filled
         if validated(run):
             status = 'done'
         else:
@@ -449,14 +449,15 @@ def print_pbs(run, file=sys.stdout):
         status, status_icon = get_run_status(run)
         if status == 'running':
             if 'script' in pbs['log']:
-                with open(unalias(pbs['log']['script']), "r") as f1:
-                    last_line = f1.readlines()[-1]
-                # puts(shift2("Progress: %s %%" % last_line.split("%")[0]))
-                puts(shift2("Progress: %s" % last_line), color=COLORS.blue)
+                if os.path.exists(unalias(pbs['log']['script'])):
+                    with open(unalias(pbs['log']['script']), "r") as f1:
+                        last_line = f1.readlines()[-1]
+                    # puts(shift2("Progress: %s %%" % last_line.split("%")[0]))
+                    puts(shift2("Progress: %s" % last_line), color=COLORS.blue)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='VirtualFleet simulation (yaml) database file parser',
+    parser = argparse.ArgumentParser(description='VirtualFleet simulation (json) database file parser',
                                      epilog="(c) LOPS/Ifremer, 2022")
 
     # Add long and short arguments
