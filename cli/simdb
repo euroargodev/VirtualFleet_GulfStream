@@ -86,7 +86,13 @@ def validated(this_run):
 
 def get_run_status(run):
     status = '?'
-    if readthiskey(run, ['pbs', 'resources_used', 'cpupercent']):
+    output_file = readthiskey(run, ['output', 'file'])
+    if output_file is not None:
+        checkA = os.path.exists(abs2local(unalias(output_file)))
+    else:
+        checkA = False
+    checkB = readthiskey(run, ['pbs', 'resources_used', 'cpupercent']) is not None
+    if checkA or checkB:
         # If this key is not None, it means the simulation is done and information have been filled
         if validated(run):
             status = 'done'
@@ -151,12 +157,15 @@ def read_a_file_size(raw_yaml_value, unit=None):
     else:
         val = raw_yaml_value.lower()
         # Convert all values to kb:
-        if 'kb' in val:
-            val = float(val.replace('kb', ''))
-        elif 'mb' in val:
-            val = float(val.replace('mb', '')) * 1024
-        elif 'gb' in val:
-            val = float(val.replace('gb', '')) * 1024 * 1024
+        if 'k' in val:
+            val = val.replace('k', '').replace('b', '')
+            val = float(val)
+        elif 'm' in val:
+            val = val.replace('m', '').replace('b', '')
+            val = float(val) * 1024
+        elif 'g' in val:
+            val = val.replace('g', '').replace('b', '')
+            val = float(val) * 1024 * 1024
         txt = "%0.2f Kb" % val
 
         # Then possibly change unit:
@@ -250,8 +259,9 @@ def listvalues(runs, keys, unit=None, sort=None):
     for run in runs:
         if "template" not in run:
             value = readthiskey(runs[run], keys)
-            value = convertthiskeyvalue(value, keys[-1], unit=unit)
-            results.update({run: value})
+            if value is not None:
+                value = convertthiskeyvalue(value, keys[-1], unit=unit)
+                results.update({run: value})
     return sort_dict_by_value(results, sort=sort)
 
 def sortby(args, run_list, data_only=False):
@@ -290,15 +300,18 @@ def sortby(args, run_list, data_only=False):
 def get_what_to_show_from_args(args):
     # Check if any of the specific properties is listed, otherwise fall back on default list:
     plist = []
-    if not (args.comment or args.output or args.resources):
+    if not (args.comment or args.output or args.resources or args.pbs):
         # This is the default list:
         plist.append('comment')
+        plist.append('pbs')
         plist.append('resources')
         plist.append('output')
     else:
         # Build user-define list:
         if args.comment:
             plist.append('comment')
+        if args.pbs:
+            plist.append('pbs')
         if args.output:
             plist.append('output')
         if args.resources:
@@ -308,6 +321,8 @@ def get_what_to_show_from_args(args):
     pprt = {}
     if 'comment' in plist:
         pprt.update({'comment': print_comment})
+    if 'pbs' in plist:
+        pprt.update({'pbs': print_pbs})
     if 'output' in plist:
         pprt.update({'output': print_outputfile})
     if 'resources' in plist:
@@ -382,7 +397,7 @@ def print_resources(run, file=sys.stdout):
         pbs = run['pbs']
         if 'resources_used' in pbs:
             resources = pbs['resources_used']
-            puts(shift1("%s %s:" % (icon, "PBS resources")), color=COLORS.white, file=file)
+            puts(shift1("%s %s:" % (icon, "PBS used resources")), color=COLORS.white, file=file)
             if 'cpupercent' in resources:
                 puts(shift2("CPU percent: %s" % resources['cpupercent']), file=file)
             if 'cput' in resources:
@@ -404,14 +419,51 @@ def print_resources(run, file=sys.stdout):
     else:
         puts(shift1("%s This run didn't used PBS resources (executed on '%s')" % (icon, run['runs-on'])), color=COLORS.yellow, file=file)
 
+
+def print_pbs(run, file=sys.stdout):
+    if run['runs-on'] == 'datarmor':
+        icon = "⚙ "
+        pbs = run['pbs']
+        puts(shift1("%s %s:" % (icon, "PBS parameters")), color=COLORS.white, file=file)
+        if os.uname()[0] == 'Linux':
+            puts(shift2("Job ID: %s, more info about this job with: qstat -fx %s" % (pbs['jobid'], pbs['jobid'])), file=file)
+        else:
+            puts(shift2("Job ID: %s" % pbs['jobid']), file=file)
+
+        puts(shift2("Queue: %s" % pbs['submit']['queue']), file=file)
+
+        dt, walltime = read_a_timestamp(pbs['submit']['walltime'], unit=UNITTIME)
+        puts(shift2("Walltime: %s" % walltime), file=file)
+
+        val, mem = read_a_file_size(pbs['submit']['mem'], unit=UNITSIZE)
+        puts(shift2("Memory: %s" % mem), file=file)
+
+        puts(shift2("PBS script: %s" % unalias(pbs['submit']['file'])), file=file)
+        puts(shift2("Script log: %s" % unalias(pbs['log']['debug'])), file=file)
+        if 'script' in pbs['log']:
+            puts(shift2("Script standard output: %s" % unalias(pbs['log']['script'])), file=file)
+        if 'pbs' in pbs['log']:
+            puts(shift2("PBS standard output: %s" % unalias(pbs['log']['pbs'])), file=file)
+
+        # If simulation is still running, print the last line of the standard output:
+        status, status_icon = get_run_status(run)
+        if status == 'running':
+            if 'script' in pbs['log']:
+                with open(unalias(pbs['log']['script']), "r") as f1:
+                    last_line = f1.readlines()[-1]
+                # puts(shift2("Progress: %s %%" % last_line.split("%")[0]))
+                puts(shift2("Progress: %s" % last_line), color=COLORS.blue)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='VirtualFleet simulation (yaml) database file parser',
                                      epilog="(c) LOPS/Ifremer, 2022")
 
     # Add long and short arguments
     parser.add_argument("-c", "--comment", help="Display run property: comments", action='store_true')
+    parser.add_argument("-b", "--pbs", help="Display run property: PBS submission parameters", action='store_true')
     parser.add_argument("-o", "--output", help="Display run property: simulation output info", action='store_true')
-    parser.add_argument("-s", "--resources", help="Display run property: PBS resources", action='store_true')
+    parser.add_argument("-s", "--resources", help="Display run property: Resources used by simulation", action='store_true')
 
     parser.add_argument("-r", "--reverse", help="Print results in reversed order", action='store_true')
     parser.add_argument("-l", "--list", help="List names of runs", action='store_true')
@@ -421,7 +473,8 @@ if __name__ == '__main__':
     parser.add_argument("--sort", help="Sorting direction ('ascent', 'descent')", default='ascent')
     parser.add_argument("--sortdata", help="Only return sorted data", action='store_true')
     parser.add_argument("--run", help="Select a run by name", default='')
-    parser.add_argument("--local", help="Localize absolute paths", action='store_true')
+    parser.add_argument("--running", help="Select only simulation(s) still running", action='store_true')
+    parser.add_argument("--local", help="Localize absolute paths (gmaze's laptop)", action='store_true')
     parser.add_argument("--unitsize", help="Unit for file size ('kb', 'mb', 'gb')", default="gb")
     parser.add_argument("--unittime", help="Unit for time laps ('s', 'm', 'h', 'd')", default=None)
     parser.add_argument("--file", help="Yaml database file to parse (guessed automatically)", default=DBFILE)
@@ -454,18 +507,25 @@ if __name__ == '__main__':
                 result = data
             print(result, file=file)
             exit(0)
+
         count = 0
         for run_name in run_order:
             if "template" not in run_name and args.run in run_name:
-                count += 1
                 this_run = DB['simulations'][run_name]
                 status, status_icon = get_run_status(this_run)
 
-                # puts("\u21AA %s" % (run_name), color=COLORS.red, bold=True, file=file)
-                puts("%s %s" % (status_icon, run_name), color=COLORS.red, bold=True, file=file)
-                for p in plist:
-                    # print(p)
-                    pprt[p](this_run)
+                show_it = True
+                if args.running:
+                    if status != "running":
+                        show_it = False
+
+                if show_it:
+                    count += 1
+                    # puts("\u21AA %s" % (run_name), color=COLORS.red, bold=True, file=file)
+                    puts("%s %s" % (status_icon, run_name), color=COLORS.red, bold=True, file=file)
+                    for p in plist:
+                        # print(p)
+                        pprt[p](this_run)
             if count >= int(args.N):
                 break
     exit(0)
