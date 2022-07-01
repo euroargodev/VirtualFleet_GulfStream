@@ -118,8 +118,439 @@
         "index": null
       }
     },
+    "run-851196": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-10days-1500drift-ASTdef.json",
+        "area_cycle_duration": 240.0,
+        "area_parking_depth": 1500.0,
+        "area_xmax": -30.0,
+        "area_ymax": 51.0,
+        "area_ymin": 36.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "851196",
+        "log": {
+          "debug": "${scratch}/logs/logger-851196.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o851196",
+          "script": "${scratch}/logs/stdout-851196.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-851196.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-851195": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-5days-ASTdef.json",
+        "area_xmax": -30.0,
+        "area_ymax": 51.0,
+        "area_ymin": 36.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "851195",
+        "log": {
+          "debug": "${scratch}/logs/logger-851195.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o851195",
+          "script": "${scratch}/logs/stdout-851195.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-851195.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-851194": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-10days-1500drift.json",
+        "area_cycle_duration": 240.0,
+        "area_parking_depth": 1500.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "851194",
+        "log": {
+          "debug": "${scratch}/logs/logger-851194.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o851194",
+          "script": "${scratch}/logs/stdout-851194.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-851194.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-851193": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-5days-1500drift.json",
+        "area_parking_depth": 1500.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "851193",
+        "log": {
+          "debug": "${scratch}/logs/logger-851193.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o851193",
+          "script": "${scratch}/logs/stdout-851193.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-851193.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-851191": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "851191",
+        "log": {
+          "debug": "${scratch}/logs/logger-851191.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o851191",
+          "script": "${scratch}/logs/stdout-851191.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-851191.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-850924": {
+      "comment": "10 days test simulation",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-5days.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=30",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "850924",
+        "log": {
+          "debug": "${scratch}/logs/logger-850924.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o850924",
+          "script": "${scratch}/logs/stdout-850924.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850924.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": 139,
+          "cput": "00:31:32",
+          "mem": "11468700kb",
+          "ncpus": "28",
+          "vmem": "258472616kb",
+          "walltime": "00:22:04"
+        }
+      },
+      "output": {
+        "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850924.nc",
+        "size-on-disk": "19.6mb",
+        "array-size": {
+          "traj": 356,
+          "obs": 1441
+        },
+        "index": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850924_ar_index_prof.txt"
+      }
+    },
+    "run-850923": {
+      "comment": "10 days test simulation",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=30",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "overrides": {
+            "cluster.n_workers": 56
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "850923",
+        "log": {
+          "debug": "${scratch}/logs/logger-850923.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o850923",
+          "script": "${scratch}/logs/stdout-850923.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850923.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": 140,
+          "cput": "00:32:08",
+          "mem": "11475240kb",
+          "ncpus": "28",
+          "vmem": "258498908kb",
+          "walltime": "00:22:30"
+        }
+      },
+      "output": {
+        "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850923.nc",
+        "size-on-disk": "19.6mb",
+        "array-size": {
+          "traj": 356,
+          "obs": 1441
+        },
+        "index": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-850923_ar_index_prof.txt"
+      }
+    },
     "run-777994": {
-      "comment": "9th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up to 300 times.",
+      "comment": "FAILED 9th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -161,12 +592,12 @@
           "mem": "100g"
         },
         "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
+          "cpupercent": 110,
+          "cput": "52:54:10",
+          "mem": "10168088kb",
+          "ncpus": 28,
+          "vmem": "51724256kb",
+          "walltime": "48:02:32"
         }
       },
       "output": {
@@ -179,7 +610,7 @@
       }
     },
     "run-777970": {
-      "comment": "8th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up to 300 times.",
+      "comment": "FAILED 8th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), parking_depth is temporarily set to 1500m and cycle period to 5 days. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -225,12 +656,12 @@
           "mem": "100g"
         },
         "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
+          "cpupercent": 97,
+          "cput": "46:47:24",
+          "mem": "9975352kb",
+          "ncpus": 28,
+          "vmem": "51057884kb",
+          "walltime": "48:04:39"
         }
       },
       "output": {
@@ -243,7 +674,7 @@
       }
     },
     "run-777931": {
-      "comment": "7th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), parking_depth is temporarily set to 1500m. All floats cycled up to 300 times.",
+      "comment": "FAILED 7th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), parking_depth is temporarily set to 1500m. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -290,12 +721,12 @@
           "mem": "100g"
         },
         "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
+          "cpupercent": 94,
+          "cput": "45:38:35",
+          "mem": "10201180kb",
+          "ncpus": 28,
+          "vmem": "50943740kb",
+          "walltime": "48:02:42"
         }
       },
       "output": {
@@ -308,7 +739,7 @@
       }
     },
     "run-777835": {
-      "comment": "6th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), cycle_period is temporarily set to 5 days. All floats cycled up to 300 times.",
+      "comment": "FAILED 6th experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area (Argo-AST definition), cycle_period is temporarily set to 5 days. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -354,12 +785,12 @@
           "mem": "100g"
         },
         "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
+          "cpupercent": 109,
+          "cput": "52:29:47",
+          "mem": "10283568kb",
+          "ncpus": 28,
+          "vmem": "51757908kb",
+          "walltime": "48:02:25"
         }
       },
       "output": {
@@ -372,7 +803,7 @@
       }
     },
     "run-777823": {
-      "comment": "5th experiment, control run. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. Updated Control run after fixed bug in circular GLORYS-NATL boundaries.",
+      "comment": "FAILED 5th experiment, control run. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. Updated Control run after fixed bug in circular GLORYS-NATL boundaries.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -665,7 +1096,7 @@
         "submit": {
           "file": "${repo}/local_work/simu07.pbs",
           "queue": "mpi",
-          "walltime": "hours=48",
+          "walltime": "48:00:00",
           "mem": "100g"
         },
         "resources_used": {
@@ -724,7 +1155,7 @@
         "submit": {
           "file": "${repo}/local_work/simu04.pbs",
           "queue": "mpi",
-          "walltime": "hours=48",
+          "walltime": "48:00:00",
           "mem": "100g"
         },
         "resources_used": {
@@ -781,7 +1212,7 @@
         "submit": {
           "file": "${repo}/local_work/simu04.pbs",
           "queue": "mpi",
-          "walltime": "hours=48",
+          "walltime": "48:00:00",
           "mem": "250g"
         },
         "resources_used": {
@@ -837,7 +1268,7 @@
         "submit": {
           "file": "${repo}/local_work/simu.pbs",
           "queue": "mpi",
-          "walltime": "hours=48",
+          "walltime": "48:00:00",
           "mem": "250g"
         },
         "resources_used": {
