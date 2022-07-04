@@ -19,7 +19,15 @@ DBFILE = os.path.sep.join([ROOT, "simulations_db.json"])
 SORT_PROPS = [None,
               'pbs.mem', 'pbs.vmem', 'pbs.cpupercent', 'pbs.cput', 'pbs.ncpus', 'pbs.walltime',
               'sim.obs', 'sim.traj', 'sim.size']
-RUN_STATUS = {'?': '⁉', 'done': '💚', 'done-invalid': '💔', 'running': '🏃', 'running-invalid': '🏃💔'}
+RUN_STATUS = {'?': '⁉',
+              'done': '💚🌞',
+              'done-invalid': '💚🌧 ',
+              'incomplete': '🧡🌞',
+              'incomplete-invalid': '🧡🌧 ',
+              'running': '🏃🌞',
+              'running-invalid': '🏃🌧 ',
+              'invalid': '🌧 ',
+              }
 
 PREF = "\033["
 RESET = f"{PREF}0m"
@@ -88,23 +96,28 @@ def get_run_status(run):
     status = '?'
     output_file = readthiskey(run, ['output', 'file'])
     if output_file is not None:
-        checkA = os.path.exists(abs2local(unalias(output_file)))
+        check_output_file = os.path.exists(abs2local(unalias(output_file)))
     else:
-        checkA = False
-    checkB = readthiskey(run, ['pbs', 'resources_used', 'cpupercent']) is not None
-    if checkA or checkB:
-        # If any of checkA or checkB is not None, it means the simulation is done and information have been filled
+        check_output_file = False
+    check_resources = readthiskey(run, ['pbs', 'resources_used', 'cpupercent']) is not None
+
+    # print(check_output_file, check_resources, validated(run))
+
+    if check_output_file and check_resources:
         if validated(run):
             status = 'done'
         else:
             status = 'done-invalid'
+    elif (check_output_file or check_resources):
+        if validated(run):
+            status = 'incomplete'
+        else:
+            status = 'incomplete-invalid'
     else:
-        # If the key is None, it means the simulation is still running and only partial information are available
-        status = 'running'
-        # if validated(run):
-        #     status = 'running'
-        # else:
-        #     status = 'running-invalid'
+        if validated(run):
+            status = 'running'
+        else:
+            status = 'running-invalid'
 
     return status, RUN_STATUS[status]
 
@@ -457,8 +470,18 @@ def print_pbs(run, file=sys.stdout):
 
 
 if __name__ == '__main__':
+
+    icons_help_string = """Icons meaning:
+  💚: run is done (meta data filled and files locally available)
+  🧡: run is incomplete (some meta are missing or files are locally missing, but possibly available elsewhere)
+  🏃: run job is still running
+  🌞: run entry is valid (json entry format complies with template)
+  🌧 : run entry is invalid (json entry format does not comply with template)
+"""
+
     parser = argparse.ArgumentParser(description='VirtualFleet simulation (json) database file parser',
-                                     epilog="(c) LOPS/Ifremer, 2022")
+                                     formatter_class=argparse.RawTextHelpFormatter,
+                                     epilog="%s\n(c) LOPS/Ifremer, 2022" % icons_help_string)
 
     # Add long and short arguments
     parser.add_argument("-c", "--comment", help="Display run property: comments", action='store_true')
