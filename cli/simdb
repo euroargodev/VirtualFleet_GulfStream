@@ -452,11 +452,12 @@ def print_pbs(run, file=sys.stdout):
         puts(shift2("Memory: %s" % mem), file=file)
 
         puts(shift2("PBS script: %s" % unalias(pbs['submit']['file'])), file=file)
-        puts(shift2("Script log: %s" % unalias(pbs['log']['debug'])), file=file)
-        if 'script' in pbs['log']:
-            puts(shift2("Script standard output: %s" % unalias(pbs['log']['script'])), file=file)
         if 'pbs' in pbs['log']:
             puts(shift2("PBS standard output: %s" % unalias(pbs['log']['pbs'])), file=file)
+
+        puts(shift2("Script logger: %s" % unalias(pbs['log']['debug'])), file=file)
+        if 'script' in pbs['log']:
+            puts(shift2("Script standard output: %s" % unalias(pbs['log']['script'])), file=file)
 
         # If simulation is still running, print the last line of the standard output:
         status, status_icon = get_run_status(run)

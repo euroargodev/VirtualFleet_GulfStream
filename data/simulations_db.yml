@@ -97,8 +97,8 @@ simulations:
       record: seconds=3600/2
       dask_hpcconfig:
         name: datarmor-local
-        overrides:
-          cluster.n_workers:
+#        overrides:
+#          cluster.n_workers:
 
     pbs:
       jobid:
@@ -410,8 +410,6 @@ simulations:
       record: seconds=3600/2
       dask_hpcconfig:
         name: datarmor-local
-        overrides:
-          cluster.n_workers:
 
     pbs:
       jobid: 777823
@@ -425,12 +423,12 @@ simulations:
         walltime: 48:00:00
         mem: 100g
       resources_used:
-        cpupercent:
-        cput:
-        mem:
-        ncpus:
-        vmem:
-        walltime:
+        cpupercent: 109
+        cput: 52:50:07
+        mem: 10389504kb
+        ncpus: 28
+        vmem: 51770868kb
+        walltime: 48:02:54
 
     output:
       file: ${scratch}/simu07/86bk49e9.nc
