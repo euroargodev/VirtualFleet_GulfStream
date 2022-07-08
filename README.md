@@ -5,11 +5,12 @@ This repository host work and results from analysis of Virtual Fleet simulations
 
 ## Results
 
-To do so, we first need to reproduce the observed sampling to validate the methodology. Below is our control run 2008-2018 Argo sampling of the North Atlantic, and it looks quite good ! [Check the full control run validation thread here](https://github.com/euroargodev/boundary_currents/discussions/11).
+All figures available on the [RESULTS page](RESULTS.md) !
 
-![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-Control-(%23613257).png)
+We first need to reproduce the observed sampling to validate the methodology. Below is our control run 2008-2018 Argo sampling of the North Atlantic, and it looks quite good ! [Check the full control run validation thread here](https://github.com/euroargodev/boundary_currents/discussions/11).
 
-All figures available on the [RESULTS.md page](RESULTS.md).
+![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Control-(%23613257).png)
+
 
 ## Simulations
 This repo is using the Virtual Fleet software from the ["gulf-stream" branch](https://github.com/euroargodev/VirtualFleet/tree/gulf-stream).
