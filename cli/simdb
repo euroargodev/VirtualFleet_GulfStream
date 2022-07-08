@@ -177,7 +177,7 @@ def read_a_file_size(raw_yaml_value, unit=None):
             val = val.replace('m', '').replace('b', '')
             val = float(val) * 1024
         elif 'g' in val:
-            val = val.replace('g', '').replace('b', '')
+            val = val.replace('g', '').replace('b', '').replace('i', '')
             val = float(val) * 1024 * 1024
         txt = "%0.2f Kb" % val
 
@@ -352,13 +352,16 @@ def shift1(txt=""):
 def shift2(txt=""):
     return "{0:10}{1}".format(' ', txt)
 
+def shift3(txt=""):
+    return "{0:15}{1}".format(' ', txt)
+
 def print_comment(run, file=sys.stdout):
     comment = run['comment']
     # icon = "📎"
     icon = "✍️"
     puts(shift1("%s  Comment:" % icon), color=COLORS.white, file=file)
     # print(shift2("%s" % comment), file=file)
-    print(shift2(textwrap.fill(comment, width=75, subsequent_indent=shift2())), file=file)
+    print(shift2(textwrap.fill(comment, width=95, subsequent_indent=shift2())), file=file)
 
 def print_outputfile(run, file=sys.stdout):
     output = run['output']
@@ -391,7 +394,6 @@ def print_outputfile(run, file=sys.stdout):
     #     cfgfile = output['float-cfg']
     #     cfgfile = unalias(cfgfile)
     #     print(shift2("Floats configuration: %s" % cfgfile), file=file)
-
 
       # float-cfg: ${scratch}/simu07/vf-simu-natl-691822_floatcfg.json
       # index: ${scratch}/simu07/vf-simu-natl-691822_ar_index_prof.txt
@@ -437,19 +439,36 @@ def print_pbs(run, file=sys.stdout):
     if run['runs-on'] == 'datarmor':
         icon = "⚙ "
         pbs = run['pbs']
-        puts(shift1("%s %s:" % (icon, "PBS parameters")), color=COLORS.white, file=file)
-        if os.uname()[0] == 'Linux':
-            puts(shift2("Job ID: %s, more info about this job with: qstat -fx %s" % (pbs['jobid'], pbs['jobid'])), file=file)
-        else:
-            puts(shift2("Job ID: %s" % pbs['jobid']), file=file)
+        puts(shift1("%s %s:" % (icon, "PBS/Dask parameters")), color=COLORS.white, file=file)
 
-        puts(shift2("Queue: %s" % pbs['submit']['queue']), file=file)
+        puts(shift2("PBS:"), color=COLORS.white, file=file)
+        if os.uname()[0] == 'Linux':
+            puts(shift3("Job ID: %s, more info about this job with: qstat -fx %s" % (pbs['jobid'], pbs['jobid'])), file=file)
+        else:
+            puts(shift3("Job ID: %s" % pbs['jobid']), file=file)
+
+        puts(shift3("Queue: %s" % pbs['submit']['queue']), file=file)
 
         dt, walltime = read_a_timestamp(pbs['submit']['walltime'], unit=UNITTIME)
-        puts(shift2("Walltime: %s" % walltime), file=file)
+        puts(shift3("Walltime: %s" % walltime), file=file)
 
         val, mem = read_a_file_size(pbs['submit']['mem'], unit=UNITSIZE)
-        puts(shift2("Memory: %s" % mem), file=file)
+        puts(shift3("Memory: %s" % mem), file=file)
+
+        if run['execute']['dask_hpcconfig']['name'] != "None" and 'client' in run['execute']['dask_hpcconfig']:
+            if run['execute']['dask_hpcconfig']['client'] != "":
+                puts(shift2("Dask:"), color=COLORS.white, file=file)
+
+                if "overrides" in run['execute']['dask_hpcconfig']:
+                    puts(shift3("Name: %s (overrides: %s)" % (run['execute']['dask_hpcconfig']['name'], run['execute']['dask_hpcconfig']['overrides'])), file=file)
+                else:
+                    puts(shift3("Name: %s" % run['execute']['dask_hpcconfig']['name']), file=file)
+
+                puts(shift3("Processes: %s" % run['execute']['dask_hpcconfig']['client']['processes']), file=file)
+
+                puts(shift3("Threads: %s" % run['execute']['dask_hpcconfig']['client']['threads']), file=file)
+                val, mem = read_a_file_size(run['execute']['dask_hpcconfig']['client']['memory'], unit=UNITSIZE)
+                puts(shift3("Memory: %s" % mem), file=file)
 
         puts(shift2("PBS script: %s" % unalias(pbs['submit']['file'])), file=file)
         if 'pbs' in pbs['log']:

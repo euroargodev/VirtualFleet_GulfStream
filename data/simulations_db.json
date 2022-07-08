@@ -85,7 +85,8 @@
         "step": "minutes=5",
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
-          "name": "datarmor-local"
+          "name": "datarmor-local",
+          "client": ""
         }
       },
       "pbs": {
@@ -118,8 +119,66 @@
         "index": null
       }
     },
-    "run-885949": {
-      "comment": "10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. This is a 'control' run.",
+    "run-923846": {
+      "comment": "Control simulation set-up. Test with 'mpirun -np 28', ncpus=28 on 'omp' queue, no Dask. Also with circular GLORYS-NATL.",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "None",
+          "client": ""
+        }
+      },
+      "pbs": {
+        "jobid": "923846",
+        "log": {
+          "debug": "${scratch}/logs/logger-923846.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o923846",
+          "script": "${scratch}/logs/stdout-923846.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-923846.pbs",
+          "queue": "omp",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-913494": {
+      "comment": "Control simulation set-up. Test with mpirun (no arg.), ncpus=28 on 'mpi' queue, with dask. Also with circular GLORYS-NATL.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -141,6 +200,200 @@
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
           "name": "datarmor-local",
+          "client": {
+            "memory": "125.81GiB",
+            "processes": "8",
+            "threads": "56"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "913494",
+        "log": {
+          "debug": "${scratch}/logs/logger-913494.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o913494",
+          "script": "${scratch}/logs/stdout-913494.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-913494.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-912543": {
+      "comment": "Control simulation set-up with circular GLORYS-NATL. Try to replay run-613257.",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "memory": "60.00GiB",
+            "processes": "8",
+            "threads": "56"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "912543",
+        "log": {
+          "debug": "${scratch}/logs/logger-912543.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o912543",
+          "script": "${scratch}/logs/stdout-912543.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-912543.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": 106,
+          "cput": "43:04:29",
+          "mem": "35591164kb",
+          "ncpus": "28",
+          "vmem": "61548200kb",
+          "walltime": "40:29:15"
+        }
+      },
+      "output": {
+        "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-912543.nc",
+        "size-on-disk": "8.0gb",
+        "array-size": {
+          "traj": 1484,
+          "obs": 144017
+        },
+        "index": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-912543_ar_index_prof.txt"
+      }
+    },
+    "run-908795": {
+      "comment": "Control simulation set-up. Test with ncpus=28 on 'omp' queue, with dask and 96 hours of walltime.",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "memory": "100.00GiB",
+            "processes": "2",
+            "threads": "28"
+          },
+          "overrides": {
+            "cluster.n_workers": 2
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "908795",
+        "log": {
+          "debug": "${scratch}/logs/logger-908795.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o908795",
+          "script": "${scratch}/logs/stdout-908795.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-908795.pbs",
+          "queue": "omp",
+          "walltime": "96:00:00",
+          "mem": "100g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-885949": {
+      "comment": "10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days). All floats cycled up to 300 times. This is a 'control' run. Job killed before 10 years.",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "default",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-default-N300.json",
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "memory": "60.00GiB",
+            "processes": "2",
+            "threads": "56"
+          },
           "overrides": {
             "cluster.n_workers": 2
           }
@@ -160,12 +413,12 @@
           "mem": "100g"
         },
         "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
+          "cpupercent": 103,
+          "cput": "49:34:09",
+          "mem": "9884768kb",
+          "ncpus": "28",
+          "vmem": "24932996kb",
+          "walltime": "48:01:18"
         }
       },
       "output": {
@@ -205,6 +458,11 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": 56
+          },
+          "client": {
+            "memory": "60.00GiB",
+            "processes": "56",
+            "threads": "56"
           }
         }
       },
@@ -271,7 +529,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": null
-          }
+          },
+          "client": ""
         }
       },
       "pbs": {
@@ -336,7 +595,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": null
-          }
+          },
+          "client": ""
         }
       },
       "pbs": {
@@ -402,7 +662,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": null
-          }
+          },
+          "client": ""
         }
       },
       "pbs": {
@@ -466,7 +727,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": 56
-          }
+          },
+          "client": ""
         }
       },
       "pbs": {
@@ -524,7 +786,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": 56
-          }
+          },
+          "client": ""
         }
       },
       "runs-on": "datarmor",
@@ -582,7 +845,8 @@
           "name": "datarmor-local",
           "overrides": {
             "cluster.n_workers": null
-          }
+          },
+          "client": ""
         }
       },
       "pbs": {
