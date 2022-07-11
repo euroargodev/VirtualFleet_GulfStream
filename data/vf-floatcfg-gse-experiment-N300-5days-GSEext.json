@@ -13,7 +13,7 @@
             }
         },
         "area_parking_depth": {
-            "value": 1500.0,
+            "value": 1000.0,
             "meta": {
                 "description": "Drifting depth in AREA",
                 "unit": "m",
@@ -22,7 +22,7 @@
             }
         },
         "area_xmax": {
-            "value": -48.0,
+            "value": -35.0,
             "meta": {
                 "description": "AREA Eastern bound",
                 "unit": "deg_longitude",

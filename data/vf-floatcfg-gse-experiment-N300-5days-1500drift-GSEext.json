@@ -22,7 +22,7 @@
             }
         },
         "area_xmax": {
-            "value": -48.0,
+            "value": -35.0,
             "meta": {
                 "description": "AREA Eastern bound",
                 "unit": "deg_longitude",
