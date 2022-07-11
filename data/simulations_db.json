@@ -158,7 +158,14 @@
           "walltime": "48:00:00",
           "mem": "100g"
         },
-        "resources_used": {"cpupercent": 2534, "cput": "1219:02:16", "mem": "104857600kb", "ncpus": "28", "vmem": "36492kb", "walltime": "48:05:30"}
+        "resources_used": {
+          "cpupercent": 2534,
+          "cput": "1219:02:16",
+          "mem": "104857600kb",
+          "ncpus": "28",
+          "vmem": "36492kb",
+          "walltime": "48:05:30"
+        }
       },
       "output": {
         "file": null,
@@ -213,7 +220,14 @@
           "walltime": "48:00:00",
           "mem": "100g"
         },
-        "resources_used": {"cpupercent": 294, "cput": "141:31:26", "mem": "54886304kb", "ncpus": "28", "vmem": "36500kb", "walltime": "48:05:13"}
+        "resources_used": {
+          "cpupercent": 294,
+          "cput": "141:31:26",
+          "mem": "54886304kb",
+          "ncpus": "28",
+          "vmem": "36500kb",
+          "walltime": "48:05:13"
+        }
       },
       "output": {
         "file": "${scratch}/simu08/rdnwrd0e.nc",
@@ -333,7 +347,14 @@
           "walltime": "96:00:00",
           "mem": "100g"
         },
-        "resources_used": {"cpupercent": 103, "cput": "99:00:47", "mem": "15438944kb", "ncpus": "28", "vmem": "31717276kb", "walltime": "96:02:45"}
+        "resources_used": {
+          "cpupercent": 103,
+          "cput": "99:00:47",
+          "mem": "15438944kb",
+          "ncpus": "28",
+          "vmem": "31717276kb",
+          "walltime": "96:02:45"
+        }
       },
       "output": {
         "file": null,
@@ -912,6 +933,264 @@
           "traj": 449,
           "obs": 17521
         }
+      }
+    },
+    "run-1010801": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "/home1/datahome/gmaze/git/github/euroargodev/VirtualFleet_GulfStream/data/vf-floatcfg-gse-experiment-N300-10days-1500drift-GSEext.json",
+        "area_cycle_duration": 240.0,
+        "area_parking_depth": 1500.0,
+        "area_xmax": -35.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 Gib",
+            "dashboard": "http://127.0.0.1:8787/status"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "1010801",
+        "log": {
+          "debug": "${scratch}/logs/logger-1010801.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o1010801",
+          "script": "${scratch}/logs/stdout-1010801.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-1010801.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "60g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-1009216": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "${repo}/data/vf-floatcfg-gse-experiment-N300-5days-1500drift-GSEext.json",
+        "area_cycle_duration": 120.0,
+        "area_parking_depth": 1500.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 GiB"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "1009216",
+        "log": {
+          "debug": "${scratch}/logs/logger-1009216.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o1009216",
+          "script": "${scratch}/logs/stdout-1009216.datarmor0.log"
+        },
+        "submit": {
+          "file": "${scratch}/simu08/vf-simu-natl-1009216.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "60g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-1009214": {
+      "comment": "",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "${repo}/data/vf-floatcfg-gse-experiment-N300-5days-GSEext.json",
+        "area_xmax": -35.0,
+        "area_cycle_duration": 120.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 GiB"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "1009214",
+        "log": {
+          "debug": "${scratch}/logs/logger-1009214.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o1009214",
+          "script": "${scratch}/logs/stdout-1009214.datarmor0.log"
+        },
+        "submit": {
+          "file": "/home1/datahome/gmaze/scratch/Projects/EARISE/WP2.3/Gulf_Stream_sim/simu08/vf-simu-natl-1009214.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "60g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
+      }
+    },
+    "run-1009213": {
+      "comment": "this is a comment from my laptop",
+      "runs-on": "datarmor",
+      "deployment-plan": {
+        "src": "${repo}/data/2008-2018-Deployment-Plan.json",
+        "start": "01/01/2008",
+        "end": "31/12/2018",
+        "float-number": 1648
+      },
+      "velocity-field": {
+        "name": "GLORYS-NATL"
+      },
+      "argo-configuration": {
+        "name": "gse-experiment",
+        "file": "${repo}/data/vf-floatcfg-gse-experiment-N300-5days-1500drift.json",
+        "area_parking_depth": 1500.0,
+        "area_xmax": -35.0,
+        "life_expectancy": 300
+      },
+      "execute": {
+        "duration": "days=365*10",
+        "step": "minutes=5",
+        "record": "seconds=3600/2",
+        "dask_hpcconfig": {
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 GiB"
+          }
+        }
+      },
+      "pbs": {
+        "jobid": "1009213",
+        "log": {
+          "debug": "${scratch}/logs/logger-1009213.datarmor0.log",
+          "pbs": "${scratch}/logs/Virt_Fleet.o1009213",
+          "script": "${scratch}/logs/stdout-1009213.datarmor0.log"
+        },
+        "submit": {
+          "file": "${scratch}/simu08/vf-simu-natl-1009213.pbs",
+          "queue": "mpi",
+          "walltime": "48:00:00",
+          "mem": "60g"
+        },
+        "resources_used": {
+          "cpupercent": null,
+          "cput": null,
+          "mem": null,
+          "ncpus": null,
+          "vmem": null,
+          "walltime": null
+        }
+      },
+      "output": {
+        "file": null,
+        "size-on-disk": null,
+        "array-size": {
+          "traj": null,
+          "obs": null
+        },
+        "index": null
       }
     }
   }
