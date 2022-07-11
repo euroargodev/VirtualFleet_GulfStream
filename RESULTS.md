@@ -1,5 +1,29 @@
 # Figures from observations and all simulations
-|                         |2008-2018 Observations|Control (#613257)     |Experiment (#614790)  |Experiment (#653526)  |Experiment (#691822)  |Experiment (#711242)  |
+|                         |2008-2018 Observations|Control (#613257)     |[1;31m💚🌞 run-614790[0m
+[0;37m     ✍️  Comment:[0m
+          1st experiment with online change of float params. 10 years simulation with full deployment
+          plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days)
+          except when they enter the GSE area, cycle_period is temporarily set to 5 days. All
+          floats cycled up to 300 times.
+|[1;31m💚🌞 run-653526[0m
+[0;37m     ✍️  Comment:[0m
+          2nd experiment with online change of float params. 10 years simulation with full deployment
+          plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days)
+          except when they enter the GSE area, parking_depth is temporarily set to 1500m. All
+          floats cycled up to 300 times.
+|[1;31m🧡🌞 run-691822[0m
+[0;37m     ✍️  Comment:[0m
+          3rd experiment. 10 years simulation with full deployment plan. Floats config all default
+          (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area
+          (Argo-AST definition), cycle_period is temporarily set to 5 days. All floats cycled
+          up to 300 times.
+|[1;31m🧡🌞 run-711242[0m
+[0;37m     ✍️  Comment:[0m
+          4th experiment. 10 years simulation with full deployment plan. Floats config all default
+          (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area
+          (Argo-AST definition), parking_depth is temporarily set to 1500m. All floats cycled
+          up to 300 times.
+|
 |------------------------:|---------------------:|---------------------:|---------------------:|---------------------:|---------------------:|---------------------:|
 |                 Figure 1||![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Optimal-Control-(%23613257)-N159.png)|||||
 |                 Figure 2|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-2008-2018-Observations.png)|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Control-(%23613257).png)|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Experiment-(%23614790).png)|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Experiment-(%23653526).png)|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Experiment-(%23691822).png)|![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/Simulation-Profile-Density-N159-Experiment-(%23711242).png)|
