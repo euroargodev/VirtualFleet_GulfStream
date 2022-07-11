@@ -120,7 +120,7 @@
       }
     },
     "run-923846": {
-      "comment": "Control simulation set-up. Test with 'mpirun -np 28', ncpus=28 on 'omp' queue, no Dask. Also with circular GLORYS-NATL.",
+      "comment": "Control simulation set-up. Test with 'mpirun -np 28', ncpus=28 on 'omp' queue, no Dask. Also with circular GLORYS-NATL. Killed before the end of the job (exceed 48h walltime).",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -158,14 +158,7 @@
           "walltime": "48:00:00",
           "mem": "100g"
         },
-        "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
-        }
+        "resources_used": {"cpupercent": 2534, "cput": "1219:02:16", "mem": "104857600kb", "ncpus": "28", "vmem": "36492kb", "walltime": "48:05:30"}
       },
       "output": {
         "file": null,
@@ -178,7 +171,7 @@
       }
     },
     "run-913494": {
-      "comment": "Control simulation set-up. Test with mpirun (no arg.), ncpus=28 on 'mpi' queue, with dask. Also with circular GLORYS-NATL.",
+      "comment": "Control simulation set-up. Test with mpirun (no arg.), ncpus=28 on 'mpi' queue, with dask. Also with circular GLORYS-NATL. Killed before the end of the job (exceed 48h walltime).",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -220,17 +213,10 @@
           "walltime": "48:00:00",
           "mem": "100g"
         },
-        "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
-        }
+        "resources_used": {"cpupercent": 294, "cput": "141:31:26", "mem": "54886304kb", "ncpus": "28", "vmem": "36500kb", "walltime": "48:05:13"}
       },
       "output": {
-        "file": null,
+        "file": "${scratch}/simu08/rdnwrd0e.nc",
         "size-on-disk": null,
         "array-size": {
           "traj": null,
@@ -240,7 +226,7 @@
       }
     },
     "run-912543": {
-      "comment": "Control simulation set-up with circular GLORYS-NATL. Try to replay run-613257.",
+      "comment": "Control simulation set-up with circular GLORYS-NATL. Replay run-613257 for test purposes.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -302,7 +288,7 @@
       }
     },
     "run-908795": {
-      "comment": "Control simulation set-up. Test with ncpus=28 on 'omp' queue, with dask and 96 hours of walltime.",
+      "comment": "Control simulation set-up. Test with ncpus=28 on 'omp' queue, with dask and 96 hours of walltime. Killed before end of the job (exceed 96h walltime !).",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -347,14 +333,7 @@
           "walltime": "96:00:00",
           "mem": "100g"
         },
-        "resources_used": {
-          "cpupercent": null,
-          "cput": null,
-          "mem": null,
-          "ncpus": null,
-          "vmem": null,
-          "walltime": null
-        }
+        "resources_used": {"cpupercent": 103, "cput": "99:00:47", "mem": "15438944kb", "ncpus": "28", "vmem": "31717276kb", "walltime": "96:02:45"}
       },
       "output": {
         "file": null,
