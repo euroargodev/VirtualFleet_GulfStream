@@ -22,7 +22,7 @@
             }
         },
         "area_xmax": {
-            "value": -35.0,
+            "value": -30.0,
             "meta": {
                 "description": "AREA Eastern bound",
                 "unit": "deg_longitude",
@@ -40,7 +40,7 @@
             }
         },
         "area_ymax": {
-            "value": 45.5,
+            "value": 51.0,
             "meta": {
                 "description": "AREA Northern bound",
                 "unit": "deg_latitude",
@@ -49,7 +49,7 @@
             }
         },
         "area_ymin": {
-            "value": 33.0,
+            "value": 36.0,
             "meta": {
                 "description": "AREA Southern bound",
                 "unit": "deg_latitude",
