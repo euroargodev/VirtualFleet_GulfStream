@@ -108,7 +108,7 @@
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
           "name": "datarmor-local",
-          "client": ""
+          "client": null
         }
       },
       "pbs": {
@@ -142,7 +142,7 @@
       }
     },
     "run-1010801": {
-      "comment": "Experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE-extended area, parking depth is set to 1500 days. All floats cycled up to 300 times.",
+      "comment": "Experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE-extended area, parking depth is set to 1500m. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -224,7 +224,12 @@
         "step": "minutes=5",
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
-          "name": "datarmor-local"
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 Gib"
+          }
         }
       },
       "pbs": {
@@ -276,7 +281,12 @@
         "step": "minutes=5",
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
-          "name": "datarmor-local"
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 Gib"
+          }
         }
       },
       "pbs": {
@@ -306,7 +316,7 @@
       }
     },
     "run-1009213": {
-      "comment": "Experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, cycling frequency is set to 5 days and parking depth to 1500 days. All floats cycled up to 300 times.",
+      "comment": "Experiment with online change of float params. 10 years simulation with full deployment plan. Floats config all default (drift:1000m, profD:2000m, cycle_period:10 days) except when they enter the GSE area, cycling frequency is set to 5 days and parking depth to 1500m. All floats cycled up to 300 times.",
       "runs-on": "datarmor",
       "deployment-plan": {
         "src": "${repo}/data/2008-2018-Deployment-Plan.json",
@@ -328,7 +338,12 @@
         "step": "minutes=5",
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
-          "name": "datarmor-local"
+          "name": "datarmor-local",
+          "client": {
+            "processes": 8,
+            "threads": 56,
+            "memory": "60.00 Gib"
+          }
         }
       },
       "pbs": {
@@ -1073,7 +1088,8 @@
         "name": "GLORYS-NATL-init"
       },
       "argo-configuration": {
-        "name": "default"
+        "name": "default",
+        "file": null
       },
       "execute": {
         "duration": "days=365*10",
@@ -1114,7 +1130,8 @@
         "array-size": {
           "traj": 1484,
           "obs": 175201
-        }
+        },
+        "index": null
       }
     },
     "run-0538001": {
@@ -1130,7 +1147,8 @@
         "name": "GLORYS-NATL-init"
       },
       "argo-configuration": {
-        "name": "default"
+        "name": "default",
+        "file": null
       },
       "execute": {
         "duration": "days=365",
@@ -1138,9 +1156,7 @@
         "record": "seconds=3600/2",
         "dask_hpcconfig": {
           "name": "datarmor-local",
-          "overrides": {
-            "cluster.n_workers": null
-          }
+          "client": null
         }
       },
       "pbs": {
@@ -1170,7 +1186,8 @@
         "array-size": {
           "traj": 449,
           "obs": 17521
-        }
+        },
+        "index": null
       }
     }
   }
