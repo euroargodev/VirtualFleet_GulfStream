@@ -3,6 +3,38 @@
 This repository host work and results from analysis of Virtual Fleet simulations dedicated to improve observation of the Gulf Stream Extension with Argo floats. Our goal is to improve Argo sampling of the GSE. 
 
 
+# Recap and conclusion 
+
+For the Gulf Stream region it was decided to explore the impact on the long term Argo array sampling if one chooses to temporarily modify float configuration parameters (with Iridium command) when they enter the study area. This was motivated by the fact that it would be quite difficult to significantly alter the North Atlantic deployment plan to accommodate for a better GSE sampling, and that using 2-ways communications to update the fleet configuration temporarily may be more acceptable to the network operators.
+
+We simulated 10 years (2008-2018) of a realistic Argo fleet using (i) the historical deployment plan and (ii) an eddy resolving state of the art ocean re-analysis (assimilating sea level, SST, in-situ T/S profiles and Sea Ice concentration and/or thickness).
+
+A control simulation was performed without modifying Argo float parameters and using typical values for cycling frequency (10 days) and drifting depth (1000db). All floats profiling depth was set to 2000db. The control simulation was evaluated correct (see figures below) given the simulation limitations (eg: we used a similar life expectancy for all simulated floats, i.e. 159 cycles that was determined as an optimum to reproduce the same 175.000 amount of total profiles).
+
+A series of experiments was then performed, where Argo float parameters are modified when they enter the study area (GSE box) and restored when they exit the area.
+We finally compared the 10 years simulation difference in profile density computed on a 1x1 degree grid.
+
+Results are shown here for experiments where the cycling frequency was increased to 5 days and drifting depths changed to: 500, 1000, and 1500 db:
+
+![](https://raw.githubusercontent.com/euroargodev/VirtualFleet_GulfStream/main/img/synthesis.png)
+
+We see that if floats drift at 500db, they are taken by the GS out of the box, downstream/eastward, too fast. The result is that the upstream region is now less sampled, to the benefit of the eastern part of the box and outside of it. This is not the expected outcome.
+On the other hand, if floats drift at 1500db, they are taken by the southward flowing under current. The result is a better sampling of the GS along the U.S. east coast but a rather in-homogeneous increase over the GSE box.
+Keeping the drifting depth to 1000db seems the best solution in the case where the cycling frequency is increased to 5 days. This set-up leads to an homogeneous increase of the profiles density in the GSE box and a smaller impact on the downstream/eastward sampling decrease.
+
+**Recommendations**
+
+We found that 2-ways communication “online” changes of the cycling frequency to 5 days leads to a 40/50% increase in profile density in the high EKE region of the Gulf Stream, using a drifting depth of 1000db.
+
+If followed, this local change of Argo float mission parameters would have a “reasonable cost” of a smaller than 25% decrease in profile density up and downstream of the Gulf Stream Extension region, where sampling would remain above Argo nominal target (1 profile every 10 days on a 3x3 grid).
+
+Therefore we recommend the following:
+- Experiment in real world on a few floats the automatic change of mission parameters over the Gulf Stream area in order to assess the technical feasibility of the procedure, 
+- Conduct an OSSE to assess the impact of local sampling changes to Ocean Climate Indicators such as heat content.
+
+
+# Experiments
+
 ## Results
 
 All figures available on the [RESULTS page](RESULTS.md) !
